@@ -25,6 +25,14 @@ public:
 	void setDmg(int dmg) { h_dmg = dmg; }
 	void setClass(int clas) { h_class = clas; }
 	void setName(string name) { h_name = name; }
+	
+	//constructor
+	Hero(string name, int hp, int dmg, int clas) {
+		h_hp = hp;
+		h_dmg = dmg;
+		h_class = clas;
+		h_name = name;
+	}
 
 	//geter
 	int getHp() { return h_hp; }
@@ -32,7 +40,11 @@ public:
 	int getClass() { return h_class; }
 	string getName() { return h_name; }
 
-	//=======FUNCTIONS=========
+	//=======SPELLS=========
+	//Atack
+	void Atack(Hero &enemy){ enemy.setHp(enemy.getHp() - h_dmg); }
+
+
 	/*		First spell :
 			0 - dmg increase
 			1 - heal
@@ -46,6 +58,7 @@ public:
 		}
 	}
 
+	//=======TEXT======
 	void Appearence() {
 		if (h_class == 0) { cout << "On the field appeared knight " << h_name << " with " << h_hp << " heal points and " << h_dmg << " damage" << endl; }
 		if (h_class == 1) { cout << "On the field appeared mag " << h_name << " with " << h_hp << " heal points and " << h_dmg << " damage" << endl; }
@@ -55,19 +68,15 @@ public:
 		cout << h_name << " WIN!";
 	}
 
-	void Atack() { cout << h_name << " atack! He atack " << h_dmg << " damage. "; }
+	void AtackT() { cout << h_name << " atack! He atack " << h_dmg << " damage. "; }
 	void GetDamage() { cout << h_name << " have " << h_hp << " heal points. "; }
 };
 
 int main() {
 	//New heroes
-	Hero arkadi;
-	arkadi.setName("Arkadi");
-	arkadi.setHp(1000);
-	arkadi.setDmg(50);
-	arkadi.setClass(0);
+	Hero arkadi("Arkadi", 500, 50, 0);
 	
-	Hero valera;
+	Hero valera("Valera", 500, 100, 1);
 	valera.setName("Valera");
 	valera.setHp(500);
 	valera.setDmg(100);
@@ -82,23 +91,23 @@ int main() {
 		//newturn
 		 
 		
-		//Arcadi atack
-		valera.setHp(valera.getHp() - arkadi.getDmg());
-		valera.Atack();
+		//Valera atack
+		valera.Atack(arkadi);
+		valera.AtackT();
 		arkadi.GetDamage();
-		if (valera.getHp() <= 0) { arkadi.Win(); break; }
-		arkadi.FirstSpell();
+		valera.FirstSpell();
 
 		cout << endl;
 		
-		//Valera atack
-		arkadi.setHp(arkadi.getHp() - valera.getDmg());
-		arkadi.Atack();
+		//Arkadi atack
+		arkadi.Atack(valera);
+		arkadi.AtackT();
 		valera.GetDamage();
-		if (arkadi.getHp() <= 0) { valera.Win(); break; }
-		valera.FirstSpell();
+		arkadi.FirstSpell();
 
 		//endturn
+		if (valera.getHp() <= 0) { arkadi.Win(); break; }
+		if (arkadi.getHp() <= 0) { valera.Win(); break; }
 		Sleep(6000);
 		cout << endl << endl;
 	}
