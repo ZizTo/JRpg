@@ -20,6 +20,9 @@ private:
 	int h_class;
 	int h_xp;
 	int h_mana;
+	int h_maxhp;
+	int h_maxdmg;
+	int h_maxmana;
 public:
 	//========TO GET ACCESS========
 	//seter
@@ -32,12 +35,12 @@ public:
 
 	//constructor
 	Hero(string name, int hp, int dmg, int clas, int xp, int mana) {
-		h_hp = hp;
-		h_dmg = dmg;
+		h_maxhp = hp;
+		h_maxdmg = dmg;
 		h_class = clas;
 		h_name = name;
 		h_xp = xp;
-		h_mana = mana;
+		h_maxmana = mana;
 	}
 
 	//geter
@@ -62,13 +65,18 @@ public:
 			h_hp += 100;
 			h_mana -= cost;
 		}
+		else {
+			Atack(enemy);
+		};
 	}
 	void DmgIncrease(int cost, Hero& enemy) {
 		if (h_mana > 9) {
 			h_dmg = round(h_dmg * 1.1);
 			h_mana -= cost;
 		}
-		else 
+		else { 
+			Atack(enemy);
+		};
 	}
 
 	//=======TEXT======
@@ -83,6 +91,26 @@ public:
 
 	void AtackT() { cout << h_name << " atack! He atack " << h_dmg << " damage. "; }
 	void GetDamage() { cout << h_name << " have " << h_hp << " heal points. "; }
+
+	//=======OTHER=======
+	void start() { h_hp = h_maxhp; h_dmg = h_maxdmg; h_mana = h_maxmana; }
+
+	void upgrade(int upgr) {
+		switch (upgr)
+		{
+		case 1:
+			h_maxhp += 50;
+			break;
+		case 2:
+			h_maxdmg += 5;
+			break;
+		case 3:
+			h_maxmana += 10;
+			break;
+		default:
+			break;
+		}
+	}
 };
 
 int main() {
@@ -99,60 +127,75 @@ int main() {
 	}
 	Hero player(inname, hp, dmg, inclas, 0, mana);
 
-	//Enemy create
-	Hero enemy("Vasia", 500, 5, 1, 0, 30);
+	//Create enemy
+	Hero enemy("Vasia", 500, 5, 1, 10, 30);
 
-	//Appearence
-	player.Appearence();
-	enemy.Appearence();
-	cout << endl;
-	
-	//Game
-	while (true) {
-		//New turn
-		//Player atack
-		cout << "Your turn! What you gona do? (0 - attack, 1 - heal (100hp, 10 mana), 2 - Demage Increase (+10%, 10 mana))" << endl;
-		int button;
-		cin >> button;
+	while (true)
+	{
+		enemy.start();
+		player.start();
 
-		switch (button)
-		{
-		case 0:
-			player.Atack(enemy);
-			break;
-		case 2:
-			player.DmgIncrease(10, enemy);
-			break;
-		case 1:
-			player.HealSpell(10, enemy);
-			break;
-		default:
-			break;
-		}
-
+		//Appearence
+		player.Appearence();
+		enemy.Appearence();
 		cout << endl;
 
-		srand(time(0));
-			//Enemy atack
-		switch (rand() % 3)
-		{
-		case 0:
-			enemy.Atack(player);
-			break;
-		case 2:
-			enemy.DmgIncrease(10, player);
-			break;
-		case 1:
-			enemy.HealSpell(10, player);
-			break;
-		default:
-			break;
-		}
+		while (true) {
+			//New turn
+			//Player atack
+			cout << "Your turn! What you gona do? (0 - attack, 1 - heal (100hp, 10 mana), 2 - Demage Increase (+10%, 10 mana))" << endl;
+			int button;
+			cin >> button;
 
-		//endturn
-		if (player.getHp() <= 0) { enemy.Win(); break; }
-		if (enemy.getHp() <= 0) { player.Win(); break; }
-		Sleep(6000);
-		cout << endl << endl;
+			switch (button)
+			{
+			case 0:
+				player.Atack(enemy);
+				break;
+			case 1:
+				player.HealSpell(10, enemy);
+				break;
+			case 2:
+				player.DmgIncrease(10, enemy);
+				break;
+			default:
+				break;
+			}
+
+			cout << endl;
+
+			srand(time(0));
+			//Enemy atack
+			switch (rand() % 3)
+			{
+			case 0:
+				enemy.Atack(player);
+				break;
+			case 2:
+				enemy.DmgIncrease(10, player);
+				break;
+			case 1:
+				enemy.HealSpell(10, player);
+				break;
+			default:
+				break;
+			}
+
+			//endturn
+			if (player.getHp() <= 0) { enemy.Win(); player.setXp(player.getXp() + enemy.getXp()); break; }
+			if (enemy.getHp() <= 0) { player.Win(); break; }
+			Sleep(6000);
+			cout << endl << endl;
+		}
+		//Upgrade
+		cout << "you can upgrade 1 - max hp, 2 - dmg, 3 - mana, 0 - stop upgrade. Cost 5 xp. You have: " << player.getXp() << "xp." << endl;
+		int upgr = 1;
+		cin >> upgr;
+		while (upgr != 0) {
+			player.upgrade(upgr);
+			cin >> upgr;
+		}
 	}
+	//Game
+	
 }
