@@ -18,6 +18,8 @@ private:
 	int h_hp;
 	int h_dmg;
 	int h_class;
+	int h_xp;
+	int h_mana;
 public:
 	//========TO GET ACCESS========
 	//seter
@@ -25,13 +27,17 @@ public:
 	void setDmg(int dmg) { h_dmg = dmg; }
 	void setClass(int clas) { h_class = clas; }
 	void setName(string name) { h_name = name; }
-	
+	void setXp(int xp) { h_xp = xp; }
+	void setMana(int mana) { h_mana = mana; }
+
 	//constructor
-	Hero(string name, int hp, int dmg, int clas) {
+	Hero(string name, int hp, int dmg, int clas, int xp, int mana) {
 		h_hp = hp;
 		h_dmg = dmg;
 		h_class = clas;
 		h_name = name;
+		h_xp = xp;
+		h_mana = mana;
 	}
 
 	//geter
@@ -39,23 +45,30 @@ public:
 	int getDmg() { return h_dmg; }
 	int getClass() { return h_class; }
 	string getName() { return h_name; }
+	int getXp() { return h_xp; }
+	int getMana() { return h_mana; }
 
 	//=======SPELLS=========
 	//Atack
-	void Atack(Hero &enemy){ enemy.setHp(enemy.getHp() - h_dmg); }
+	void Atack(Hero& enemy) { enemy.setHp(enemy.getHp() - h_dmg); AtackT(); enemy.GetDamage(); }
 
 
 	/*		First spell :
 			0 - dmg increase
 			1 - heal
 	*/
-	void FirstSpell() {
-		if (h_class == 0) {
+	void HealSpell(int cost, Hero& enemy) {
+		if (h_mana > 9) {
+			h_hp += 100;
+			h_mana -= cost;
+		}
+	}
+	void DmgIncrease(int cost, Hero& enemy) {
+		if (h_mana > 9) {
 			h_dmg = round(h_dmg * 1.1);
+			h_mana -= cost;
 		}
-		if (h_class == 1) {
-			h_hp += 200;
-		}
+		else 
 	}
 
 	//=======TEXT======
@@ -73,41 +86,72 @@ public:
 };
 
 int main() {
-	//New heroes
-	Hero arkadi("Arkadi", 500, 50, 0);
-	
-	Hero valera("Valera", 500, 100, 1);
-	valera.setName("Valera");
-	valera.setHp(500);
-	valera.setDmg(100);
-	valera.setClass(1);
+	//Create Hero
+	string inname; int inclas; int dmg; int hp; int mana;
+	cout << "Name your person and choose your class (0 - knight, 1 - mag)" << endl;
+	cin >> inname >> inclas;
+	if (inclas == 0)
+	{
+		hp = 500; dmg = 20; mana = 10;
+	} 
+	else if (inclas == 1) {
+		hp = 300; dmg = 10; mana = 100;
+	}
+	Hero player(inname, hp, dmg, inclas, 0, mana);
+
+	//Enemy create
+	Hero enemy("Vasia", 500, 5, 1, 0, 30);
 
 	//Appearence
-	arkadi.Appearence();
-	valera.Appearence();
+	player.Appearence();
+	enemy.Appearence();
 	cout << endl;
+	
 	//Game
 	while (true) {
-		//newturn
-		 
-		
-		//Valera atack
-		valera.Atack(arkadi);
-		valera.AtackT();
-		arkadi.GetDamage();
-		valera.FirstSpell();
+		//New turn
+		//Player atack
+		cout << "Your turn! What you gona do? (0 - attack, 1 - heal (100hp, 10 mana), 2 - Demage Increase (+10%, 10 mana))" << endl;
+		int button;
+		cin >> button;
+
+		switch (button)
+		{
+		case 0:
+			player.Atack(enemy);
+			break;
+		case 2:
+			player.DmgIncrease(10, enemy);
+			break;
+		case 1:
+			player.HealSpell(10, enemy);
+			break;
+		default:
+			break;
+		}
 
 		cout << endl;
-		
-		//Arkadi atack
-		arkadi.Atack(valera);
-		arkadi.AtackT();
-		valera.GetDamage();
-		arkadi.FirstSpell();
+
+		srand(time(0));
+			//Enemy atack
+		switch (rand() % 3)
+		{
+		case 0:
+			enemy.Atack(player);
+			break;
+		case 2:
+			enemy.DmgIncrease(10, player);
+			break;
+		case 1:
+			enemy.HealSpell(10, player);
+			break;
+		default:
+			break;
+		}
 
 		//endturn
-		if (valera.getHp() <= 0) { arkadi.Win(); break; }
-		if (arkadi.getHp() <= 0) { valera.Win(); break; }
+		if (player.getHp() <= 0) { enemy.Win(); break; }
+		if (enemy.getHp() <= 0) { player.Win(); break; }
 		Sleep(6000);
 		cout << endl << endl;
 	}
