@@ -12,7 +12,7 @@ using namespace std;
 		1 - Mag
 */
 class Hero {
-public:
+private:
 	//========DATA=========
 	string h_name;
 	int h_hp;
