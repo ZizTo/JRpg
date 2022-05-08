@@ -1,0 +1,9 @@
+﻿  Knight.cpp
+  game.cpp
+D:\Jrpg\Jrpg\game.cpp(10,37): warning C4244: аргумент: преобразование "const float" в "unsigned int", возможна потеря данных
+D:\Jrpg\Jrpg\game.cpp(10,23): warning C4244: аргумент: преобразование "const float" в "unsigned int", возможна потеря данных
+D:\Jrpg\Jrpg\game.cpp(543,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  main.cpp
+  person.cpp
+  Создание кода...
+  Jrpg.vcxproj -> D:\Jrpg\x64\Debug\Jrpg.exe
